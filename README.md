@@ -69,6 +69,18 @@ And to close a server and all open connections do:
 await server.close()
 ```
 
+If your request handler throws an error it is forward to the client using the following schema
+
+```proto
+message RPCError {
+  optional int32 code = 1;
+  required string message = 2;
+  optional string details = 3;
+}
+```
+
+And if your rpc method does not return a value you can use the `NULL` type in the definition.
+
 ## License
 
 MIT
