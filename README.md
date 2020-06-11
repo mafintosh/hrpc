@@ -73,9 +73,10 @@ If your request handler throws an error it is forward to the client using the fo
 
 ```proto
 message RPCError {
-  optional int32 code = 1;
-  required string message = 2;
-  optional string details = 3;
+  required string message = 1;
+  optional string code = 2;
+  optional int32 errno = 3;
+  optional string details = 4;
 }
 ```
 

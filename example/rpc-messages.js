@@ -156,6 +156,14 @@ function defineRPCError () {
     if (!defined(obj.message)) throw new Error("message is required")
     var len = encodings.string.encodingLength(obj.message)
     length += 1 + len
+    if (defined(obj.code)) {
+      var len = encodings.string.encodingLength(obj.code)
+      length += 1 + len
+    }
+    if (defined(obj.errno)) {
+      var len = encodings.int32.encodingLength(obj.errno)
+      length += 1 + len
+    }
     if (defined(obj.details)) {
       var len = encodings.string.encodingLength(obj.details)
       length += 1 + len
@@ -168,11 +176,21 @@ function defineRPCError () {
     if (!buf) buf = Buffer.allocUnsafe(encodingLength(obj))
     var oldOffset = offset
     if (!defined(obj.message)) throw new Error("message is required")
-    buf[offset++] = 18
+    buf[offset++] = 10
     encodings.string.encode(obj.message, buf, offset)
     offset += encodings.string.encode.bytes
+    if (defined(obj.code)) {
+      buf[offset++] = 18
+      encodings.string.encode(obj.code, buf, offset)
+      offset += encodings.string.encode.bytes
+    }
+    if (defined(obj.errno)) {
+      buf[offset++] = 24
+      encodings.int32.encode(obj.errno, buf, offset)
+      offset += encodings.int32.encode.bytes
+    }
     if (defined(obj.details)) {
-      buf[offset++] = 26
+      buf[offset++] = 34
       encodings.string.encode(obj.details, buf, offset)
       offset += encodings.string.encode.bytes
     }
@@ -187,6 +205,8 @@ function defineRPCError () {
     var oldOffset = offset
     var obj = {
       message: "",
+      code: "",
+      errno: 0,
       details: ""
     }
     var found0 = false
@@ -200,12 +220,20 @@ function defineRPCError () {
       offset += varint.decode.bytes
       var tag = prefix >> 3
       switch (tag) {
-        case 2:
+        case 1:
         obj.message = encodings.string.decode(buf, offset)
         offset += encodings.string.decode.bytes
         found0 = true
         break
+        case 2:
+        obj.code = encodings.string.decode(buf, offset)
+        offset += encodings.string.decode.bytes
+        break
         case 3:
+        obj.errno = encodings.int32.decode(buf, offset)
+        offset += encodings.int32.decode.bytes
+        break
+        case 4:
         obj.details = encodings.string.decode(buf, offset)
         offset += encodings.string.decode.bytes
         break

@@ -33,9 +33,10 @@ const { messages } = parse(schemaSource)
 if (!messages.RPCError) {
   schemaSource += `
     message RPCError {
-      // optional uint32 code = 1;
-      required string message = 2;
-      optional string details = 3;
+      required string message = 1;
+      optional string code = 2;
+      optional int32 errno = 3;
+      optional string details = 4;
     }
   `
 }
