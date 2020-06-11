@@ -6,10 +6,11 @@ const errorEncoding = {
   encode: messages.RPCError.encode,
   encodingLength: messages.RPCError.encodingLength,
   decode (buf, offset) {
-    const { message, code, details } = messages.RPCError.decode(buf, offset)
+    const { message, code, errno, details } = messages.RPCError.decode(buf, offset)
     errorEncoding.decode.bytes = messages.RPCError.decode.bytes
     const err = new Error(message)
     err.code = code
+    err.errno = errno
     err.details = details
     return err
   }
