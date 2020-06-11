@@ -49,6 +49,11 @@ const js = protobuf.toJS(schemaSource, {
 const commands = new Map()
 const { services } = parse(schemaSource)
 
+const isVoid = (type) => {
+  if (messages.hasOwnProperty(type)) return false
+  return type === 'NULL' || type === 'Void'
+}
+
 let service
 
 for (const s of services) {
@@ -71,8 +76,8 @@ for (const m of service.methods) {
 
   cmd.name = name
   lastId = cmd.id = m.options.id ? Number(m.options.id) : (lastId + 1)
-  cmd.requestEncoding = m.input_type === 'NULL' ? 'RPC.NULL' : 'messages.' + m.input_type
-  cmd.responseEncoding = m.output_type === 'NULL' ? 'RPC.NULL' : 'messages.' + m.output_type
+  cmd.requestEncoding = isVoid(m.input_type) ? 'RPC.NULL' : 'messages.' + m.input_type
+  cmd.responseEncoding = isVoid(m.output_type) ? 'RPC.NULL' : 'messages.' + m.output_type
 
   commands.set(name, cmd)
 }

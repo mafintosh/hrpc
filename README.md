@@ -80,7 +80,7 @@ message RPCError {
 }
 ```
 
-And if your rpc method does not return a value you can use the `NULL` type in the definition.
+And if your rpc method does not return a value you can use the `Void` type in the definition.
 
 ## License
 
