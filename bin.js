@@ -42,7 +42,7 @@ if (!messages.RPCError) {
 
 const js = protobuf.toJS(schemaSource, {
   inlineEnc: true,
-  encodings: 'hrpc/encodings'
+  encodings: 'hrpc-runtime/encodings'
 })
 
 const commands = new Map()

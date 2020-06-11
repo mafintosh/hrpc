@@ -5,8 +5,7 @@
 /* eslint-disable no-redeclare */
 /* eslint-disable camelcase */
 
-// Remember to `npm install --save protocol-buffers-encodings`
-var encodings = require('protocol-buffers-encodings')
+var encodings = require('hrpc-runtime/encodings')
 var varint = encodings.varint
 var skip = encodings.skip
 

@@ -6,7 +6,6 @@
     "hrpc": "./bin.js"
   },
   "dependencies": {
-    "arpeecee": "^1.0.5",
     "minimist": "^1.2.5",
     "protocol-buffers": "^4.1.2",
     "protocol-buffers-schema": "^3.4.0"
