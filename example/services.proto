@@ -1,0 +1,12 @@
+message TestRequest {
+  required string name = 1;
+}
+
+message TestResponse {
+  required string res = 1;
+}
+
+service RPC {
+  rpc Test (TestRequest) returns (TestResponse) { option id = 1; }
+  rpc Boring (NULL) returns (NULL) {}
+}
