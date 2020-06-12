@@ -135,9 +135,13 @@ for (const [name, cmd] of commands) {
 
 src.push('  }')
 src.push('')
-src.push('  onRequest (handlers) {')
+src.push('  onRequest (context, handlers) {')
+src.push('    if (!handlers) {')
+src.push('      handlers = context')
+src.push('      context = null')
+src.push('    }')
 for (const [name, cmd] of commands) {
-  src.push('    if (handlers.' + name + ') this._' + name + '.onrequest = handlers.' + name)
+  src.push('    if (handlers.' + name + ') this._' + name + '.onrequest = handlers.' + name + '.bind(context)')
 }
 src.push('  }')
 

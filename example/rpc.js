@@ -41,9 +41,13 @@ module.exports = class HRPCSession extends HRPC {
     })
   }
 
-  onRequest (handlers) {
-    if (handlers.test) this._test.onrequest = handlers.test
-    if (handlers.boring) this._boring.onrequest = handlers.boring
+  onRequest (context, handlers) {
+    if (!handlers) {
+      handlers = context
+      context = null
+    }
+    if (handlers.test) this._test.onrequest = handlers.test.bind(context)
+    if (handlers.boring) this._boring.onrequest = handlers.boring.bind(context)
   }
 
   test (data) {
