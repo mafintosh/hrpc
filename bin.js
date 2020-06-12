@@ -111,10 +111,10 @@ for (const service of services) {
 
   src.push('  }')
   src.push('')
-  src.push('  onRequest (handlers) {')
+  src.push('  onRequest (context, handlers = context) {')
   for (const m of service.methods) {
     const name = camelize(m.name)
-    src.push('    if (handlers.' + name + ') this._' + name + '.onrequest = handlers.' + name + '.bind(handlers)')
+    src.push('    if (handlers.' + name + ') this._' + name + '.onrequest = handlers.' + name + '.bind(context)')
   }
   src.push('  }')
 

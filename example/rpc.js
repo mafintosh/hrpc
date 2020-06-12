@@ -33,9 +33,9 @@ class HRPCServiceTest {
     })
   }
 
-  onRequest (handlers) {
-    if (handlers.test) this._test.onrequest = handlers.test.bind(handlers)
-    if (handlers.boring) this._boring.onrequest = handlers.boring.bind(handlers)
+  onRequest (context, handlers = context) {
+    if (handlers.test) this._test.onrequest = handlers.test.bind(context)
+    if (handlers.boring) this._boring.onrequest = handlers.boring.bind(context)
   }
 
   test (data) {
