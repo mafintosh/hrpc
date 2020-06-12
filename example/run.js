@@ -1,7 +1,7 @@
 const HRPC = require('./rpc')
 
 HRPC.createServer(function (client) {
-  client.onRequest({
+  client.test.onRequest({
     test (req) {
       if (req.name === 'fail') {
         const err = new Error('failing')
@@ -20,13 +20,13 @@ HRPC.createServer(function (client) {
 
   const c = HRPC.connect('/tmp/test.sock')
 
-  c.test({ name: 'foo' }).then(res => {
+  c.test.test({ name: 'foo' }).then(res => {
     console.log(res)
   })
 
-  c.test({ name: 'fail' }).catch(err => {
+  c.test.test({ name: 'fail' }).catch(err => {
     console.log(err)
   })
 
-  c.boringNoReply()
+  c.test.boringNoReply()
 })

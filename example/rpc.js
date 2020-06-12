@@ -16,38 +16,26 @@ const errorEncoding = {
   }
 }
 
-module.exports = class HRPCSession extends HRPC {
-  constructor (rawSocket) {
-    super()
-    this.rawSocket = rawSocket
+class HRPCServiceTest {
+  constructor (rpc) {
+    const service = rpc.defineService({ id: 1 })
 
-    const rpc = this._rpc = new RPC({ errorEncoding })
-    rpc.pipe(this.rawSocket).pipe(rpc)
-    rpc.on('close', () => this.emit('close'))
-    rpc.on('error', (err) => {
-      if (this.listenerCount('error')) this.emit('error', err)
-    })
-
-    this._test = this._rpc.defineMethod({
+    this._test = service.defineMethod({
       id: 1,
       requestEncoding: messages.TestRequest,
-      responseEncoding: messages.TestResponse,
+      responseEncoding: messages.TestResponse
     })
 
-    this._boring = this._rpc.defineMethod({
+    this._boring = service.defineMethod({
       id: 2,
       requestEncoding: RPC.NULL,
-      responseEncoding: RPC.NULL,
+      responseEncoding: RPC.NULL
     })
   }
 
-  onRequest (context, handlers) {
-    if (!handlers) {
-      handlers = context
-      context = null
-    }
-    if (handlers.test) this._test.onrequest = handlers.test.bind(context)
-    if (handlers.boring) this._boring.onrequest = handlers.boring.bind(context)
+  onRequest (handlers) {
+    if (handlers.test) this._test.onrequest = handlers.test.bind(handlers)
+    if (handlers.boring) this._boring.onrequest = handlers.boring.bind(handlers)
   }
 
   test (data) {
@@ -64,6 +52,22 @@ module.exports = class HRPCSession extends HRPC {
 
   boringNoReply () {
     return this._boring.requestNoReply()
+  }
+}
+
+module.exports = class HRPCSession extends HRPC {
+  constructor (rawSocket) {
+    super()
+    this.rawSocket = rawSocket
+
+    const rpc = new RPC({ errorEncoding })
+    rpc.pipe(this.rawSocket).pipe(rpc)
+    rpc.on('close', () => this.emit('close'))
+    rpc.on('error', (err) => {
+      if (this.listenerCount('error')) this.emit('error', err)
+    })
+
+    this.test = new HRPCServiceTest(rpc)
   }
 
   destroy (err) {

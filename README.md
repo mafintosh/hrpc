@@ -15,7 +15,7 @@ message Echo {
   required string value = 1;
 }
 
-service RPC {
+service Example {
   rpc Echo (Echo) returns (Echo) {}
 }
 ```
@@ -24,7 +24,7 @@ Then compile it using the hrpc compiler
 
 ```
 npm install -g hrpc
-hrpc services.proto --service=RPC --rpc=rpc.js --messages=rpc-messages.js
+hrpc services.proto --rpc=rpc.js --messages=rpc-messages.js
 npm install --save hrpc-runtime # make sure to add this to your package.json
 ```
 
@@ -38,7 +38,7 @@ const MyRPC = require('./rpc')
 
 // a server
 const server = MyRPC.createServer(function (client) {
-  client.onRequest({
+  client.example.onRequest({
     async echo ({ value }) {
       return { value: 'echo: ' + value }
     }
@@ -50,7 +50,7 @@ await server.listen('/tmp/test.sock')
 // a client
 const client = MyRPC.connect('/tmp/test.sock')
 
-const { value } = await client.echo({ value: 'hello world!'})
+const { value } = await client.example.echo({ value: 'hello world!'})
 console.log(value) // 'echo: hello world'
 ```
 

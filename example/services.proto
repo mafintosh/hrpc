@@ -6,7 +6,7 @@ message TestResponse {
   required string res = 1;
 }
 
-service RPC {
+service Test {
   rpc Test (TestRequest) returns (TestResponse) { option id = 1; }
   rpc Boring (NULL) returns (NULL) {}
 }
