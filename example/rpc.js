@@ -58,13 +58,18 @@ class HRPCServiceTest {
 module.exports = class HRPCSession extends HRPC {
   constructor (rawSocket) {
     super()
+
     this.rawSocket = rawSocket
+    this.rawSocketError = null
+    rawSocket.on('error', (err) => {
+      this.rawSocketError = err
+    })
 
     const rpc = new RPC({ errorEncoding })
     rpc.pipe(this.rawSocket).pipe(rpc)
     rpc.on('close', () => this.emit('close'))
     rpc.on('error', (err) => {
-      if (this.listenerCount('error')) this.emit('error', err)
+      if ((err !== this.rawSocketError && !isStreamError(err)) || this.listenerCount('error')) this.emit('error', err)
     })
 
     this.test = new HRPCServiceTest(rpc)
@@ -73,4 +78,8 @@ module.exports = class HRPCSession extends HRPC {
   destroy (err) {
     this.rawSocket.destroy(err)
   }
+}
+
+function isStreamError (err) {
+  return err.message === 'Writable stream closed prematurely' || err.message === 'Readable stream closed prematurely'
 }

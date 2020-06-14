@@ -140,13 +140,18 @@ src.push(
   'module.exports = class HRPCSession extends HRPC {',
   '  constructor (rawSocket) {',
   '    super()',
+  '',
   '    this.rawSocket = rawSocket',
+  '    this.rawSocketError = null',
+  '    rawSocket.on(\'error\', (err) => {',
+  '      this.rawSocketError = err',
+  '    })',
   '',
   '    const rpc = new RPC({ errorEncoding })',
   '    rpc.pipe(this.rawSocket).pipe(rpc)',
   '    rpc.on(\'close\', () => this.emit(\'close\'))',
   '    rpc.on(\'error\', (err) => {',
-  '      if (this.listenerCount(\'error\')) this.emit(\'error\', err)',
+  '      if ((err !== this.rawSocketError && !isStreamError(err)) || this.listenerCount(\'error\')) this.emit(\'error\', err)',
   '    })'
 )
 
@@ -166,6 +171,12 @@ src.push('')
 src.push('  destroy (err) {')
 src.push('    this.rawSocket.destroy(err)')
 src.push('  }')
+src.push('}')
+src.push('')
+
+// TODO: tag streamx errors
+src.push('function isStreamError (err) {')
+src.push('  return err.message === \'Writable stream closed prematurely\' || err.message === \'Readable stream closed prematurely\'')
 src.push('}')
 
 fs.writeFileSync(argv.messages, js, 'utf-8')
