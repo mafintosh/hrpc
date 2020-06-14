@@ -56,7 +56,7 @@ class HRPCServiceTest {
 }
 
 module.exports = class HRPCSession extends HRPC {
-  constructor (rawSocket) {
+  constructor (rawSocket, { maxSize = 2 * 1024 * 1024 * 1024 } = {}) {
     super()
 
     this.rawSocket = rawSocket
@@ -65,7 +65,7 @@ module.exports = class HRPCSession extends HRPC {
       this.rawSocketError = err
     })
 
-    const rpc = new RPC({ errorEncoding })
+    const rpc = new RPC({ errorEncoding, maxSize })
     rpc.pipe(this.rawSocket).pipe(rpc)
     rpc.on('close', () => this.emit('close'))
     rpc.on('error', (err) => {

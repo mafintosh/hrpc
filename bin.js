@@ -138,7 +138,7 @@ for (const service of services) {
 src.push('')
 src.push(
   'module.exports = class HRPCSession extends HRPC {',
-  '  constructor (rawSocket) {',
+  '  constructor (rawSocket, { maxSize = 2 * 1024 * 1024 * 1024 } = {}) {',
   '    super()',
   '',
   '    this.rawSocket = rawSocket',
@@ -147,7 +147,7 @@ src.push(
   '      this.rawSocketError = err',
   '    })',
   '',
-  '    const rpc = new RPC({ errorEncoding })',
+  '    const rpc = new RPC({ errorEncoding, maxSize })',
   '    rpc.pipe(this.rawSocket).pipe(rpc)',
   '    rpc.on(\'close\', () => this.emit(\'close\'))',
   '    rpc.on(\'error\', (err) => {',
