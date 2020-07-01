@@ -86,7 +86,7 @@ const camelize = (name) => {
 }
 
 for (const service of services) {
-  const id = lastServiceId = (lastServiceId + 1)
+  const id = lastServiceId = service.options.id ? Number(service.options.id) : (lastServiceId + 1)
 
   src.push('')
   src.push('class HRPCService' + service.name + ' {')
