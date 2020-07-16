@@ -86,14 +86,12 @@ const camelize = (name) => {
 }
 
 const serviceId = service => {
-  if (service.options.id) return Number(service.options.id)
-  if (service.options['hrpc.service_id']) return Number(service.options['hrpc.service_id'])
+  if (service.options['hrpc.service']) return Number(service.options['hrpc.service'])
   return null
 }
 
 const methodId = method => {
-  if (method.options.id) return Number(method.options.id)
-  if (method.options['hrpc.id']) return Number(method.options['hrpc.id'])
+  if (method.options['hrpc.method']) return Number(method.options['hrpc.method'])
   return null
 }
 
