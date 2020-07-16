@@ -48,7 +48,7 @@ const { services } = parse(schemaSource)
 
 const isVoid = (type) => {
   if (messages.hasOwnProperty(type)) return false
-  return type === 'NULL' || type === 'Void'
+  return type === 'NULL' || type === 'Void' || type === 'hrpc.Void'
 }
 
 let req = path.relative(path.dirname(argv.rpc), argv.messages)
@@ -85,8 +85,20 @@ const camelize = (name) => {
   return name.slice(0, 1).toLowerCase() + name.slice(1)
 }
 
+const serviceId = service => {
+  if (service.options.id) return Number(service.options.id)
+  if (service.options['hrpc.service_id']) return Number(service.options['hrpc.service_id'])
+  return null
+}
+
+const methodId = method => {
+  if (method.options.id) return Number(method.options.id)
+  if (method.options['hrpc.id']) return Number(method.options['hrpc.id'])
+  return null
+}
+
 for (const service of services) {
-  const id = lastServiceId = service.options.id ? Number(service.options.id) : (lastServiceId + 1)
+  const id = lastServiceId = serviceId(service) || (lastServiceId + 1)
 
   src.push('')
   src.push('class HRPCService' + service.name + ' {')
@@ -96,7 +108,7 @@ for (const service of services) {
   let lastMethodId = 0
 
   for (const m of service.methods) {
-    const id = lastMethodId = m.options.id ? Number(m.options.id) : (lastMethodId + 1)
+    const id = lastMethodId = methodId(m) || (lastMethodId + 1)
     const name = camelize(m.name)
     const requestEncoding = isVoid(m.input_type) ? 'RPC.NULL' : 'messages.' + m.input_type
     const responseEncoding = isVoid(m.output_type) ? 'RPC.NULL' : 'messages.' + m.output_type
