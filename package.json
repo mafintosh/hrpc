@@ -1,6 +1,6 @@
 {
   "name": "hrpc",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Simple RPC with Protobuf Services",
   "bin": {
     "hrpc": "./bin.js"
