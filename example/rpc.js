@@ -18,16 +18,16 @@ const errorEncoding = {
 
 class HRPCServiceTest {
   constructor (rpc) {
-    const service = rpc.defineService({ id: 1 })
+    const service = rpc.defineService({ id: 2 })
 
     this._test = service.defineMethod({
-      id: 1,
+      id: 5,
       requestEncoding: messages.TestRequest,
       responseEncoding: messages.TestResponse
     })
 
     this._boring = service.defineMethod({
-      id: 2,
+      id: 6,
       requestEncoding: RPC.NULL,
       responseEncoding: RPC.NULL
     })
